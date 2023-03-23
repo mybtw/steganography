@@ -3,9 +3,6 @@ import numpy as np
 import argparse
 
 
-# в мерже теперь передается 5 пикселей: 4 из старой и 1 из новой
-# теперь мы веренем из мержа массив из 4 пикселей, которые надо замержить
-
 class Steganography:
     BLACK_PIXEL = (0, 0, 0)
     H = np.array([[0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -51,28 +48,31 @@ class Steganography:
         return container
 
     def _int_to_bin(self, rgb):
-        """Convert an integer tuple to a binary (string) tuple.
+        """Преобразовывает целочисленный кортеж в двоичный (строковый) кортеж.
 
-        :param rgb: An integer tuple like (220, 110, 96)
-        :return: A string tuple like ("00101010", "11101011", "00010110")
+        :param rgb: Целочисленный кортеж подобный (220, 110, 96)
+        :return: Строковый кортеж, подобный ("00101010", "11101011", "00010110")
         """
         r, g, b = rgb
         return f'{r:08b}', f'{g:08b}', f'{b:08b}'
 
     def _bin_to_int(self, rgb):
-        """Convert a binary (string) tuple to an integer tuple.
+        """Преобразовывает двоичный (строковый) кортеж в целочисленный кортеж.
 
-        :param rgb: A string tuple like ("00101010", "11101011", "00010110")
-        :return: Return an int tuple like (220, 110, 96)
+        :param rgb: Строковый кортеж, подобный ("00101010", "11101011", "00010110")
+        :return: Целочисленный кортеж подобный (220, 110, 96)
         """
         r, g, b = rgb
         return int(r, 2), int(g, 2), int(b, 2)
 
     def _merge_rgb(self, rgb1, rgb2, rgb3, rgb4, rgb_sm):
-        """Merge two RGB tuples.
+        """Объединить 5 кортежей RGB
 
-        :param rgb1: An integer tuple like (220, 110, 96)
-        :param rgb2: An integer tuple like (240, 95, 105)
+        :param rgb1: Целочисленный кортеж вида (220, 110, 96) первой картинки
+        :param rgb2: Целочисленный кортеж вида (220, 110, 96) первой картинки
+        :param rgb3: Целочисленный кортеж вида (220, 110, 96) первой картинки
+        :param rgb4: Целочисленный кортеж вида (220, 110, 96) первой картинки
+        :param rgb_sm: Целочисленный кортеж вида (220, 110, 96) второй картинки
         :return: An integer tuple with the two RGB values merged.
         """
 
@@ -127,8 +127,8 @@ class Steganography:
     def _unmerge_rgb(self, rgb1, rgb2, rgb3, rgb4):
         """Unmerge RGB.
 
-        :param rgb: An integer tuple like (220, 110, 96)
-        :return: An integer tuple with the two RGB values merged.
+        :param rgbn: Целочисленный кортеж типа (220, 110, 96)
+        :return: Целочисленный кортеж с объединенными 5 значениями RGB.
         """
         r1, g1, b1 = self._int_to_bin(rgb1)
         r2, g2, b2 = self._int_to_bin(rgb2)
@@ -148,11 +148,11 @@ class Steganography:
         return self._bin_to_int(rgb)
 
     def merge(self, image1, image2):
-        """Merge image2 into image1.
+        """Объединие изображения 2 с изображением 1.
 
-        :param image1: First image
-        :param image2: Second image
-        :return: A new merged image.
+        :param image1: первая картинка
+        :param image2: вторая картинка
+        :return: Новая объединенная картинка.
         """
         # Check the images dimensions
         if image2.size[0] > image1.size[0] or image2.size[1] > image1.size[1]:
@@ -187,10 +187,10 @@ class Steganography:
         return new_image
 
     def unmerge(self, image):
-        """Unmerge an image.
+        """Раскодировать картинку.
 
-        :param image: The input image.
-        :return: The unmerged/extracted image.
+        :param image: Входное изображение.
+        :return: Раскодированная картинка.
         """
         pixel_map = image.load()
 
@@ -237,39 +237,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-"""
-r1, g1, b1 = self._int_to_bin()
-r2, g2, b2 = self._int_to_bin(rgb2)
-r3, g3, b3 = self._int_to_bin(rgb3)
-r4, g4, b4 = self._int_to_bin(rgb4)
-
-container_r = np.array(str_to_arr(r1[-3:] + r2[-4:] + r3[-4:] + r4[-4:]))
-container_g = np.array(self.str_to_arr(g1[-3:] + g2[-4:] + g3[-4:] + g4[-4:]))
-container_b = np.array(self.str_to_arr(b1[-3:] + b2[-4:] + b3[-4:] + b4[-4:]))
-
-mul_rh = self.matr_to_bin(np.dot(container_r, self.H))
-mul_gh = self.matr_to_bin(np.dot(container_g, self.H))
-mul_bh = self.matr_to_bin(np.dot(container_b, self.H))
-
-arr = [self._bin_to_int(rgb1), self._bin_to_int(rgb2), self._bin_to_int(rgb3), self._bin_to_int(rgb4)]"""
-
-'''
-
-l = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] for i in range(12)])
-sm = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-
-s = '00101101'
-print(s[2:6])
-
-H = np.array([[0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
-              [0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1],
-              [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1],
-              [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]])
-
-b = [[1], [0], [1], [0], [0], [0], [1], [1], [1], [0], [1], [0], [0], [0], [0]]
-
-print(np.dot(H, np.array(b)))
-
-sam = ("00101010", "11101011", "00010110")
-'''
